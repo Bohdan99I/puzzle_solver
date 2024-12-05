@@ -1,9 +1,33 @@
 const fs = require("fs");
 
+// Перевірка чи рядок складається тільки з цифр
+const isNumeric = (fragment) => {
+  return /^\d+$/.test(fragment);
+};
+
 // Завантаження фрагментів з файлу
 const loadFragments = (filename) => {
-  const data = fs.readFileSync(filename, "utf8");
-  return data.split("\n").filter(Boolean);
+  try {
+    if (!fs.existsSync(filename)) {
+      throw new Error(`Файл ${filename} не знайдено`);
+    }
+
+    const data = fs.readFileSync(filename, "utf8");
+    const fragments = data.split("\n")
+      .map(line => line.trim())
+      .filter(Boolean);
+
+    // Перевірка чи всі фрагменти складаються з цифр
+    const invalidFragments = fragments.filter(fragment => !isNumeric(fragment));
+    if (invalidFragments.length > 0) {
+      throw new Error(`Знайдено некоректні фрагменти (не цифри): ${invalidFragments.join(", ")}`);
+    }
+
+    return fragments;
+  } catch (error) {
+    console.error("Помилка при завантаженні фрагментів:", error.message);
+    process.exit(1);
+  }
 };
 
 // Створення графу
