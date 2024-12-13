@@ -13,14 +13,21 @@ const loadFragments = (filename) => {
     }
 
     const data = fs.readFileSync(filename, "utf8");
-    const fragments = data.split("\n")
-      .map(line => line.trim())
+    const fragments = data
+      .split("\n")
+      .map((line) => line.trim())
       .filter(Boolean);
 
     // Перевірка чи всі фрагменти складаються з цифр
-    const invalidFragments = fragments.filter(fragment => !isNumeric(fragment));
+    const invalidFragments = fragments.filter(
+      (fragment) => !isNumeric(fragment)
+    );
     if (invalidFragments.length > 0) {
-      throw new Error(`Знайдено некоректні фрагменти (не цифри): ${invalidFragments.join(", ")}`);
+      throw new Error(
+        `Знайдено некоректні фрагменти (не цифри): ${invalidFragments.join(
+          ", "
+        )}`
+      );
     }
 
     return fragments;
